@@ -41,3 +41,15 @@ connectDB()
 // now we are creating api route
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+
+//create a middleware because we create so many api and their try catch so we seperate a file of this
+
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+    return res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message,
+    })
+})

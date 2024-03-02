@@ -1,7 +1,9 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
+import { errorHandler } from "../utils/error.js";
 
-export const signup = async (req, res) =>{
+//after creating a middleware in index.js then add next in signup
+export const signup = async (req, res, next) =>{
 
    // console.log(req.body);
     //we get the information from the browser this is comming from the body they call a body request
@@ -11,8 +13,13 @@ export const signup = async (req, res) =>{
     try {
         await newUser.save();
      res.status(201).json('User created successfully!');
+
     } catch (error) {
-        res.status(500).json(error.message);//.message is use to get the message for error reason
+       // res.status(500).json(error.message);//.message is use to get the message for error reason
+       //after creating a  middleware for error then
+       next(error);
+       // suppose if we want to  create error  then
+      // next(errorHandler(550, 'error from the function'));
     }
      
 }
