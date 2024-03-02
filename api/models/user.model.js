@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-//after creation of schema we can create model
+//after creation of schema we are creating model
 const user = mongoose.model('User', userSchema);
 
 export default User;

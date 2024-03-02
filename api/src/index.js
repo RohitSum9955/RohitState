@@ -1,6 +1,7 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import express from 'express';
 import connectDB from './db/index.js';
+import userRouter from './../routes/user.route.js';
 
 //import mongoose from 'mongoose';
 // dotenv.config();
@@ -33,3 +34,6 @@ connectDB()
 .catch((err) => {
     console.log("MONGO DB connection failed !!", err);
 })
+
+// now we are creating api route
+app.use('/api/user', userRouter);
