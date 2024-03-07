@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
-import bcryptjs from "bcryptjs";
+// import bcryptjs from "bcryptjs";
+import  bcrypt from "bcrypt";
 import { errorHandler } from "../utils/error.js";
 
 //after creating a middleware in index.js then add next in signup
@@ -37,10 +38,10 @@ export const signup = async(req, res)=>{
     // 7. return res
 
     const { username, email, password } = req.body
-    console.log("email:", email);
+    //console.log("email:", email);
     //2.step
     if (
-        [usernmae, email, passowrd].some((field)=>
+        [username, email, password].some((field)=>
         field?.trim() === "")
     ) {
         throw new errorHandler(400,"All fields are required")
@@ -66,7 +67,7 @@ export const signup = async(req, res)=>{
     )
     //6.step
     if(!createdUser) {
-        throw new errorHandler(500, "Somethign went wrong while registering the user")
+        throw new errorHandler(500, "Something went wrong while registering the user")
     }
     //7.step
     return res.status(201).json("User created successfully!")
