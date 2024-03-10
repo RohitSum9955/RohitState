@@ -1,6 +1,5 @@
 import User from "../models/user.model.js";
 // import bcryptjs from "bcryptjs";
-import  bcrypt from "bcrypt";
 import { errorHandler } from "../utils/error.js";
 
 //after creating a middleware in index.js then add next in signup
@@ -65,6 +64,7 @@ export const signup = async(req, res)=>{
     const createdUser = await User.findById(user._id).select(
         "-password"
     )
+    
     //6.step
     if(!createdUser) {
         throw new errorHandler(500, "Something went wrong while registering the user")
