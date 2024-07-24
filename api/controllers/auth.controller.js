@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
-// import bcryptjs from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
+import jwt from "jsonwebtoken";
 
 //after creating a middleware in index.js then add next in signup
 // export const signup = async (req, res) =>{
@@ -72,4 +73,27 @@ export const signup = async(req, res)=>{
     //7.step
     return res.status(201).json("User created successfully!")
 
-}
+};
+
+//for sign in
+
+export const signin = async (req, res, next) => {
+    //get data from req of body
+    const { email, password } = req.body;
+    try {
+        const validUser = await User.findOne({ email });
+        if(!validUser) return next(errorHandler(404, 'User not found!'));
+        const validPassword = bcryptjs.compareSync(password, validUser.password);
+        if(!validPassword) return next(errorHandler(401, 'Wrong credential!'));
+        //use jwt
+        const token = jwt.sign({ id: validUser._id}, process.env.JWT_SECRET);
+        // done all the jwt aand cookies now we can remove password from sending back to the user 
+        const {password: pass, ...rest} = validUser._doc;//caa the rest in res.cookies in json(validUser) to json(rest)
+        //save the token as the cookies
+res.cookie('access_token', token, { httpOnly: true}).status(200).json(rest);
+// and write httpOnly for cookies i.e. no other 3rd party application can access the cookies and make safer
+    } catch (error) {
+        next(error);
+        
+    }
+};

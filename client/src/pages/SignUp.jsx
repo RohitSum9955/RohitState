@@ -73,3 +73,4 @@ export default function SignUp() {
     </div>
   )
 }
+// localhost:3000/api/auth/signup
