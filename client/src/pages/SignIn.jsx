@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
-import { Link, useNavigate} from 'react-router-dom'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { signInFailure, signInStart, signInSuccess } from '../redux/user/userSlice';
 
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   //handle error
-  const[error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   //handle loading
-  const[loading, setLoading] = useState(false);
+  // const[loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   //after initialization navigate
   const navigate = useNavigate();
+  //use dispatch fuction
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,7 +26,9 @@ export default function SignIn() {
     e.preventDefault();
     try {
        //before loading we setloading is true
-    setLoading(true);
+    // setLoading(true);
+    //replace this dispatch
+    dispatch(signInStart());
     // const res = await fetch('/api/auth/signup', formData);
     //for security reason we write formData in string type
     const res = await fetch('/api/auth/signin', {
@@ -35,17 +42,21 @@ export default function SignIn() {
     const data = await res.json();
     //after the request is finish we  want test if the data   we are getting error of success or false
     if(data.success === false){
-      setLoading(false);
-      setError(data.message);
+      // setLoading(false);
+      // setError(data.message);
+      //use dispatch if error happen and remove starting 2 lines of code
+      dispatch(signInFailure(data.message));
       return;
     }
-    setLoading(false);
-    setError(null);
+    // setLoading(false);
+    // setError(null);
+    dispatch(signInSuccess(data));
     navigate('/');
     //console.log(data);
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      // setLoading(false);
+      // setError(error.message);
+      dispatch(signInFailure(error.message));
     }
    
   };

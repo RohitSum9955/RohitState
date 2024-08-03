@@ -24,6 +24,8 @@ import jwt from "jsonwebtoken";
     // }
      
 //}
+
+// http://localhost:5173/sign-up
 export const signup = async(req, res)=>{
     // res.status(500).json({
     //     message: "User created successfully!"
@@ -77,6 +79,7 @@ export const signup = async(req, res)=>{
 
 //for sign in
 
+// localhost:3000/api/auth/signin
 export const signin = async (req, res, next) => {
     //get data from req of body
     const { email, password } = req.body;
