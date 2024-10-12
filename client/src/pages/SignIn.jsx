@@ -83,4 +83,4 @@ export default function SignIn() {
     </div>
   )
 }
-// localhost:3000/api/auth/signup
+// localhost:3000/api/auth/signin

@@ -15,18 +15,18 @@ import jwt from "jsonwebtoken";
 //         await newUser.save();
 //      res.status(201).json('User created successfully!');
 
-    // } catch (error) {
-    //    // res.status(500).json(error.message);//.message is use to get the message for error reason
-    //    //after creating a  middleware for error then
-    //    next(error);
-    //    // suppose if we want to  create error  then
-    //   // next(errorHandler(550, 'error from the function'));
-    // }
-     
+// } catch (error) {
+//    // res.status(500).json(error.message);//.message is use to get the message for error reason
+//    //after creating a  middleware for error then
+//    next(error);
+//    // suppose if we want to  create error  then
+//   // next(errorHandler(550, 'error from the function'));
+// }
+
 //}
 
 // http://localhost:5173/sign-up
-export const signup = async(req, res)=>{
+export const signup = async (req, res) => {
     // res.status(500).json({
     //     message: "User created successfully!"
     // })
@@ -43,17 +43,17 @@ export const signup = async(req, res)=>{
     //console.log("email:", email);
     //2.step
     if (
-        [username, email, password].some((field)=>
-        field?.trim() === "")
+        [username, email, password].some((field) =>
+            field?.trim() === "")
     ) {
-        throw new errorHandler(400,"All fields are required")
-    } 
+        throw new errorHandler(400, "All fields are required")
+    }
     //3.step
     const existedUser = await User.findOne({
         //use oprerator $
         $or: [{ username }, { email }]
     })
-    if (existedUser){
+    if (existedUser) {
         throw new errorHandler(409, "User with email or username already exists")
     }
 
@@ -67,9 +67,9 @@ export const signup = async(req, res)=>{
     const createdUser = await User.findById(user._id).select(
         "-password"
     )
-    
+
     //6.step
-    if(!createdUser) {
+    if (!createdUser) {
         throw new errorHandler(500, "Something went wrong while registering the user")
     }
     //7.step
@@ -85,18 +85,18 @@ export const signin = async (req, res, next) => {
     const { email, password } = req.body;
     try {
         const validUser = await User.findOne({ email });
-        if(!validUser) return next(errorHandler(404, 'User not found!'));
+        if (!validUser) return next(errorHandler(404, 'User not found!'));
         const validPassword = bcryptjs.compareSync(password, validUser.password);
-        if(!validPassword) return next(errorHandler(401, 'Wrong credential!'));
+        if (!validPassword) return next(errorHandler(401, 'Wrong credential!'));
         //use jwt
-        const token = jwt.sign({ id: validUser._id}, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
         // done all the jwt aand cookies now we can remove password from sending back to the user 
-        const {password: pass, ...rest} = validUser._doc;//caa the rest in res.cookies in json(validUser) to json(rest)
+        const { password: pass, ...rest } = validUser._doc; // the rest in res.cookies in json(validUser) to json(rest)
         //save the token as the cookies
-res.cookie('access_token', token, { httpOnly: true}).status(200).json(rest);
-// and write httpOnly for cookies i.e. no other 3rd party application can access the cookies and make safer
+        res.cookie('access_token', token, { httpOnly: true }).status(200).json(rest);
+        // and write httpOnly for cookies i.e. no other 3rd party application can access the cookies and make safer
     } catch (error) {
         next(error);
-        
+
     }
 };
